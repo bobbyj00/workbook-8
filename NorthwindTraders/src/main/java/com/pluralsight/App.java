@@ -3,31 +3,31 @@ package com.pluralsight;
 import java.sql.*;
 
 public class App {
-
     public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/northwind";
+        String username = "root";
+        String password = "BobbyJ1227";
 
-        try {
-            Connection connection;
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind", "root", "BobbyJ1227");
+        try (Connection conn = DriverManager.getConnection(url, username, password)) {
+            String sql = "SELECT ProductID, ProductName, UnitPrice, UnitsInStock FROM products";
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
 
-            Statement statement = connection.createStatement();
+                System.out.printf("%-5s %-30s %-10s %-10s%n", "ID", "Name", "Price", "Stock");
+                System.out.println("-------------------------------------------------------------");
 
-            String query = "SELECT  ProductName FROM Products;";
+                while (rs.next()) {
+                    int id = rs.getInt("ProductID");
+                    String name = rs.getString("ProductName");
+                    double price = rs.getDouble("UnitPrice");
+                    int stock = rs.getInt("UnitsInStock");
 
-            ResultSet results = statement.executeQuery(query);
+                    System.out.printf("%-5d %-30s $%-9.2f %-10d%n", id, name, price, stock);
+                }
 
-            while (results.next()) {
-
-                String product = results.getString(1);
-                System.out.println(product);
             }
-            
-            connection.close();
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println("Connection error: " + e.getMessage());
         }
-
-
     }
 }
