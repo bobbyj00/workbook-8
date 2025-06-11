@@ -112,7 +112,7 @@ public class App {
 
             System.out.print("\nEnter a Category ID to view its products: ");
             int selectedId = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             displayProductsByCategory(conn, selectedId);
 
